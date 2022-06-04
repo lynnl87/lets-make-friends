@@ -13,7 +13,7 @@ namespace LetsMakeFriends
             MainWindow mainWindow = new MainWindow();
             mainWindow.Show();
             ApiConfig.ParseConfig("./config.json");
-            StateManager.Instance.RegisterKey(KeyInformation.VK_F12, KeyInformation.MOD_CTRL, null);
+            StateManager.Instance.RegisterKey(KeyInformation.VK_F12, KeyInformation.MOD_CTRL);
         }
     }
 }
