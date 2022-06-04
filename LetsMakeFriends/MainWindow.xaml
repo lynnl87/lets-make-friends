@@ -40,6 +40,7 @@
                         <Setter Property="Margin" Value="4, 4, 0, 0" />
                     </Style>
                 </StackPanel.Resources>
+                <Button Content="Reload Config?" Command="{Binding ReloadConfigCommand}" />
                 <Button Content="Get advice!" Command="{Binding GetAdviceCommand}" />
                 <Button Content="Clear Log?" Command="{Binding ClearLogCommand}"/>
             </StackPanel>

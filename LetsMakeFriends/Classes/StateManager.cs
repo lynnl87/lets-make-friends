@@ -4,6 +4,7 @@ using LetsMakeFriends.MVVM.Model;
 using LetsMakeFriends.MVVM.ViewModel;
 using System;
 using System.ComponentModel;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -49,6 +50,11 @@ namespace LetsMakeFriends.Classes
         private RelayCommand _clearLogCommand;
 
         /// <summary>
+        /// Relay command for reloading the configuration file.
+        /// </summary>
+        private RelayCommand _reloadConfigCommand;
+
+        /// <summary>
         /// Initializes an instance of the StateManager class.
         /// </summary>
         private StateManager()
@@ -90,7 +96,7 @@ namespace LetsMakeFriends.Classes
         {
             get
             {
-                return _getAdviceCommand ?? (_getAdviceCommand = new RelayCommand(o => GetAdvice(), o => true));
+                return _getAdviceCommand ?? (_getAdviceCommand = new RelayCommand(o => GetAdvice(), o => CanGetAdvice()));
             }
         }
 
@@ -102,6 +108,17 @@ namespace LetsMakeFriends.Classes
             get
             {
                 return _clearLogCommand ?? (_clearLogCommand = new RelayCommand(o => ClearLog(), o => true));
+            }
+        }
+
+        /// <summary>
+        /// Gets the command for reloading the config.
+        /// </summary>
+        public RelayCommand ReloadConfigCommand
+        {
+            get
+            {
+                return _reloadConfigCommand ?? (_reloadConfigCommand = new RelayCommand(o => ReloadConfig(), o => true));
             }
         }
 
@@ -143,6 +160,15 @@ namespace LetsMakeFriends.Classes
         }
 
         /// <summary>
+        /// Handles reloading the config.
+        /// </summary>
+        public void ReloadConfig()
+        {
+            ApiOptionsViewModel.Instance.ApiOptions.Clear();
+            ApiConfig.ParseConfig("./config.json");
+        }
+
+        /// <summary>
         /// Handles clearing out the log text.
         /// </summary>
         private void ClearLog()
@@ -156,6 +182,15 @@ namespace LetsMakeFriends.Classes
         private void GetAdvice()
         {
             OnHotkeyPress(0);
+        }
+
+        /// <summary>
+        /// Determines if we can get some advice.
+        /// </summary>
+        /// <returns>TRUE if we can.</returns>
+        private bool CanGetAdvice()
+        {
+            return ApiOptionsViewModel.Instance.ApiOptions.FirstOrDefault(i => i.IsChecked) != null;
         }
 
         /// <summary>
