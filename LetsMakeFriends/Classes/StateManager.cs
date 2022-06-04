@@ -39,6 +39,16 @@ namespace LetsMakeFriends.Classes
         private LogModel _logModel;
 
         /// <summary>
+        /// Relay command to interface with ui button.
+        /// </summary>
+        private RelayCommand _getAdviceCommand;
+
+        /// <summary>
+        /// Relay command for clearing the log.
+        /// </summary>
+        private RelayCommand _clearLogCommand;
+
+        /// <summary>
         /// Initializes an instance of the StateManager class.
         /// </summary>
         private StateManager()
@@ -74,6 +84,28 @@ namespace LetsMakeFriends.Classes
         }
 
         /// <summary>
+        /// Gets the command for getting advice.
+        /// </summary>
+        public RelayCommand GetAdviceCommand
+        {
+            get
+            {
+                return _getAdviceCommand ?? (_getAdviceCommand = new RelayCommand(o => GetAdvice(), o => true));
+            }
+        }
+
+        /// <summary>
+        /// Gets the command for clearing the log.
+        /// </summary>
+        public RelayCommand ClearLogCommand
+        {
+            get
+            {
+                return _clearLogCommand ?? (_clearLogCommand = new RelayCommand(o => ClearLog(), o => true));
+            }
+        }
+
+        /// <summary>
         /// Gets an instance of our http client.
         /// </summary>
         public HttpClient Client
@@ -105,9 +137,25 @@ namespace LetsMakeFriends.Classes
         /// <param name="keyValue">Key Value</param>
         /// <param name="modifiers">Ctrl/Alt/Shift modifiers.</param>
         /// <param name="callback">Function to be called on hotkey pressed.</param>
-        public void RegisterKey(uint keyValue, uint modifiers, HotkeyPressedCallBack callback)
+        public void RegisterKey(uint keyValue, uint modifiers)
         {
             s_hotkeyHelper.RegisterHotKey(keyValue, modifiers, OnHotkeyPress);
+        }
+
+        /// <summary>
+        /// Handles clearing out the log text.
+        /// </summary>
+        private void ClearLog()
+        {
+            Log.LogText = string.Empty;
+        }
+
+        /// <summary>
+        /// Handles getting some advice.
+        /// </summary>
+        private void GetAdvice()
+        {
+            OnHotkeyPress(0);
         }
 
         /// <summary>

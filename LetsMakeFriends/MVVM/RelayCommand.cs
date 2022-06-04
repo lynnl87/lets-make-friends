@@ -3,24 +3,24 @@ using System.Windows.Input;
 
 namespace LetsMakeFriends.MVVM
 {
-    public class RelayCommand<T> : ICommand
+    public class RelayCommand : ICommand
     {
         /// <summary>
         /// Action to execute.
         /// </summary>
-        readonly Action<T> _execute = null;
+        readonly Action<object> _execute = null;
 
         /// <summary>
-        /// Predicate determining if the command can be executed.
+        /// Function determining if the command can be executed.
         /// </summary>
-        readonly Predicate<T> _canExecute = null;
+        readonly Func<object, bool> _canExecute = null;
 
         /// <summary>
         /// Initializes a new instance of <see cref="DelegateCommand{T}"/>.
         /// </summary>
         /// <param name="execute">Delegate to execute when Execute is called on the command.  This can be null to just hook up a CanExecute delegate.</param>
         /// <remarks><seealso cref="CanExecute"/> will always return true.</remarks>
-        public RelayCommand(Action<T> execute)
+        public RelayCommand(Action<object> execute)
             : this(execute, null)
         {
         }
@@ -30,7 +30,7 @@ namespace LetsMakeFriends.MVVM
         /// </summary>
         /// <param name="execute">The execution logic.</param>
         /// <param name="canExecute">The execution status logic.</param>
-        public RelayCommand(Action<T> execute, Predicate<T> canExecute)
+        public RelayCommand(Action<object> execute, Func<object, bool> canExecute)
         {
             if (execute == null)
             {
@@ -50,7 +50,7 @@ namespace LetsMakeFriends.MVVM
         ///</returns>
         public bool CanExecute(object parameter)
         {
-            return _canExecute == null || _canExecute((T)parameter);
+            return _canExecute == null || _canExecute(parameter);
         }
 
         ///<summary>
@@ -68,7 +68,7 @@ namespace LetsMakeFriends.MVVM
         ///<param name="parameter">Data used by the command. If the command does not require data to be passed, this object can be set to <see langword="null" />.</param>
         public void Execute(object parameter)
         {
-            _execute((T)parameter);
+            _execute(parameter);
         }
     }
 }
