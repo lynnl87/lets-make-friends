@@ -66,16 +66,23 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Classes\Helpers\AdviceHelper.cs" />
+    <Compile Include="Classes\ApiConfig.cs" />
     <Compile Include="Classes\Helpers\Delegates.cs" />
     <Compile Include="Classes\Helpers\HotkeyHelper.cs" />
     <Compile Include="Classes\Helpers\NativeHelper.cs" />
+    <Compile Include="Classes\KeyInformation.cs" />
+    <Compile Include="Classes\StateManager.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="MVVM\Model\ApiOptionsModel.cs" />
+    <Compile Include="MVVM\Model\LogModel.cs" />
+    <Compile Include="MVVM\RelayCommand.cs" />
+    <Compile Include="MVVM\ViewModelBase.cs" />
+    <Compile Include="MVVM\ViewModel\ApiOptionsViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -93,6 +100,9 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <AdditionalFiles Include="config.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </AdditionalFiles>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>

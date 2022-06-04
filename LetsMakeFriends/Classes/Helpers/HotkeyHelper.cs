@@ -21,36 +21,36 @@ namespace LetsMakeFriends.Classes.Helpers
         /// <summary>
         /// Our random generator for key ids.
         /// </summary>
-        private Random _random;
+        private readonly Random _random;
 
         /// <summary>
-        /// Our interop helper for accessing message pump.
+        /// Our handle for  accessing message pump.
         /// </summary>
-        private WindowInteropHelper _windowInteropHelper;
-
+        private readonly IntPtr _windowHandle;
         /// <summary>
         /// Contains a dictionary of assigned hotkey id's and their callbacks.
         /// </summary>
-        private Dictionary<int, HotkeyPressedCallBack> _hotkeyDict;
+        private readonly Dictionary<int, HotkeyPressedCallBack> _hotkeyDict;
 
         /// <summary>
         /// Initializes an instance of a HotkeyHelper class.
         /// </summary>
-        /// <param name="ourWindow">The {Window} window of our running application</param>
-        public HotkeyHelper(System.Windows.Window ourWindow)
+        public HotkeyHelper()
         {
             _random = new Random();
             _hotkeyDict = new Dictionary<int, HotkeyPressedCallBack>();
-            _windowInteropHelper = new WindowInteropHelper(ourWindow);
-            _source = HwndSource.FromHwnd(_windowInteropHelper.Handle);
+            _windowHandle = new WindowInteropHelper(App.Current.MainWindow).EnsureHandle();
+            _source = HwndSource.FromHwnd(_windowHandle);
             _source.AddHook(HwndHook);
         }
 
         /// <summary>
         /// Finalizes an instance of a HotkeyHelper class.
         /// </summary>
-        ~HotkeyHelper() => Dispose(false);
-
+        ~HotkeyHelper()
+        {
+            Dispose(false);
+        }
         /// <summary>
         /// Handles clearing up some internal resources.
         /// </summary>
@@ -103,8 +103,15 @@ namespace LetsMakeFriends.Classes.Helpers
         {
             int keyId = -1;
             int retryCount = 5;
-            while (retryCount > 0)
+            while (retryCount > -1)
             {
+                // Add a check for the final retry.
+                if (retryCount == 0)
+                {
+                    // Should not have happend this fast.
+                    throw new Exception("Key already exists");
+                }
+
                 keyId = _random.Next();
                 if (_hotkeyDict.ContainsKey(keyId))
                 {
@@ -115,16 +122,9 @@ namespace LetsMakeFriends.Classes.Helpers
                 {
                     break;
                 }
-
-                // Add a check for the final retry.
-                if (retryCount == 1)
-                {
-                    // Should not have happend this fast.
-                    throw new Exception("Key already exists");
-                }
             }
 
-            if (!NativeHelper.RegisterHotKey(_windowInteropHelper.Handle, keyId, modifiers, keyValue))
+            if (!NativeHelper.RegisterHotKey(_windowHandle, keyId, modifiers, keyValue))
             {
                 // handle error
                 throw new Exception("Error registering for hotkey.");
@@ -140,7 +140,7 @@ namespace LetsMakeFriends.Classes.Helpers
         /// <param name="hotkeyId">Hotkey id to remove.</param>
         public void UnregisterHotKey(int hotkeyId)
         {
-            NativeHelper.UnregisterHotKey(_windowInteropHelper.Handle, hotkeyId);
+            NativeHelper.UnregisterHotKey(_windowHandle, hotkeyId);
         }
 
         /// <summary>
